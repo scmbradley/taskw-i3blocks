@@ -21,7 +21,7 @@ def shorten(string):
     if len(string) <= maxlen:
         return string
     else:
-        return string[:30] + "..."
+        return string[: maxlen - 3] + "..."
 
 
 def main():
