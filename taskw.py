@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-# from tasklib import TaskWarrior
-
 import subprocess
 import json
 import os
@@ -15,6 +13,7 @@ def _default(name, default="", arg_type=str):
 
 
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
+notask_msg = _default("TASKW_NOTASK_MSG", default="No Task", arg_type=str)
 
 
 def shorten(string):
@@ -30,7 +29,7 @@ def main():
     j = json.loads(prcs.stdout)
 
     if len(j) == 0:
-        bar_text = "No task"
+        bar_text = notask_msg
     elif len(j) == 1:
         bar_text = shorten(j[0]["description"])
     else:
