@@ -12,6 +12,10 @@ def _default(name, default="", arg_type=str):
     return arg_type(val)
 
 
+# I don't know who originally wrote this function,
+# but many of the python blocklets in i3blocks-contrib use it.
+
+
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
 notask_msg = _default("TASKW_NOTASK_MSG", default="No Task", arg_type=str)
 
