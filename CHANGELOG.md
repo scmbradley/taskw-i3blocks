@@ -5,5 +5,6 @@
 ### ADDED
 
  - Basic functioning of taskw block
- - Conf option for truncating text
- - Configurable no task message
+ - Option for truncating text
+ - Option for no task message
+ - Option to sort by urgency
