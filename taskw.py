@@ -12,8 +12,14 @@ def _default(name, default="", arg_type=str):
     return arg_type(val)
 
 
-# I don't know who originally wrote this function,
+strbool = lambda s: s.lower() in ["t", "true", "1"]
+
+
+# I don't know who originally wrote these functions,
 # but many of the python blocklets in i3blocks-contrib use it.
+
+# arch-update added this code on 25 March 2018 and as far as I can tell
+# this was the earliest use.
 
 
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
@@ -29,8 +35,8 @@ def shorten(string):
 
 def main():
     shell_cmd = "task +ACTIVE export"
-    prcs = subprocess.run(shell_cmd, shell=True, capture_output=True)
-    j = json.loads(prcs.stdout)
+    prcs = subprocess.check_output(shell_cmd, shell=True)
+    j = json.loads(prcs)
 
     if len(j) == 0:
         bar_text = notask_msg
