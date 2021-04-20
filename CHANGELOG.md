@@ -1,6 +1,6 @@
 # Changelog for taskw blocklet
 
-## Unreleased
+## v0.1.0
 
 ### ADDED
 
