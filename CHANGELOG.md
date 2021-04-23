@@ -1,5 +1,13 @@
 # Changelog for taskw blocklet
 
+## Unreleased
+
+### ADDED
+
+ - Config options to turn on/off calling taskwarrior
+ - Config options to turn on/off calling timewarrior
+ - Timewarrior task description override
+
 ## v0.1.0
 
 ### ADDED

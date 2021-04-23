@@ -28,7 +28,10 @@ get the task description from timew directly.
 The former would require a lot messing about parsing times and dates, 
 so we can explore the latter.
 Timewarrior tags don't have any sort of hierarchy, so there's no analogue of a task duration's "description" attribute in taskwarrior.
-The description is passed to timewarrior as the first tag by the `on-modify` hook.
+The description is passed to timewarrior as the first tag by the `on-modify` hook,
+although this sometimes doesn't work as expected and the first tag is the project instead of tag description,
+and I don't understand why.
+So I don't recommend using this override.
 
 All this is to explain why only the following modes of use are properly 
 supported.

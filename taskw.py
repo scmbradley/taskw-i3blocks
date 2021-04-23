@@ -25,7 +25,7 @@ def strbool(s):
 
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
 notask_msg = _default("TASKW_NOTASK_MSG", default="No Task", arg_type=str)
-urgency_bool = _default("TASKW_SORT_URGENCY", default="", arg_type=strbool)
+urgency_bool = _default("TASKW_SORT_URGENCY", default="f", arg_type=strbool)
 
 
 taskw_tf = _default("TASKW_TF", default="t", arg_type=strbool)
@@ -65,17 +65,17 @@ def export_taskw():
         return notask_msg, 0
 
 
-def export_timew_text():
-    timew_shell = "timew get dom.active.tag.1"
-    # the output of `timew get` includes a newline that we have to strip.
-    timew_txt = subprocess.check_output(timew_shell, shell=True).decode("utf-8")[:-1]
-    return timew_txt
-
-
 def export_timew_active():
     timew_active_shell = "timew get dom.active"
     timew_active_tf = subprocess.check_output(timew_active_shell, shell=True)
     return True if b"1" in timew_active_tf else False
+
+
+def export_timew_text():
+    timew_shell = "timew get dom.active.tag.1"
+    # the output of `timew get` includes a newline that we have to strip.
+    timew_txt = subprocess.check_output(timew_shell, shell=True).decode("utf-8")[:-1]
+    return timew_txt if export_timew_active() else notask_msg
 
 
 def main():
@@ -92,9 +92,7 @@ def main():
         pass
 
     if timew_desc_override or not taskw_tf:
-        task_desc = (
-            shorten(export_timew_text()) if export_timew_active() else notask_msg
-        )
+        task_desc = shorten(export_timew_text())
     # We will be appending more things to this, later.
     bar_text = task_desc + task_append
     return bar_text
