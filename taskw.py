@@ -3,6 +3,7 @@
 import subprocess
 import json
 import os
+import re
 
 
 def _default(name, default="", arg_type=str):
@@ -65,6 +66,9 @@ def export_taskw():
         return notask_msg, 0
 
 
+# Helper function to export from timew
+
+
 def export_timew_active():
     timew_active_shell = "timew get dom.active"
     timew_active_tf = subprocess.check_output(timew_active_shell, shell=True)
@@ -76,6 +80,19 @@ def export_timew_text():
     # the output of `timew get` includes a newline that we have to strip.
     timew_txt = subprocess.check_output(timew_shell, shell=True).decode("utf-8")[:-1]
     return timew_txt if export_timew_active() else notask_msg
+
+
+# oof this is a mess. sort it out.
+def export_duration():
+    timew_duration_shell = "timew get dom.active.duration"
+    timew_duration_text = subprocess.check_output(
+        timew_duration_shell, shell=True
+    ).decode("utf-8")[:-1]
+    find_hrs = re.findall("\d\dH", timew_duration_text)
+    find_mins = re.findall("\d\dM", timew_duration_text)
+    duration_hrs = find_hrs[0][:-1] if len(find_hrs) > 0 else "00"
+    duration_mins = find_mins[0][:-1] if len(find_mins) > 0 else "00"
+    return duration_hrs + ":" + duration_mins
 
 
 def main():
