@@ -41,6 +41,7 @@ if timew_desc_override:
 # TESTING TESTING TESTING
 
 # taskw_tf = False
+timew_tf = True
 # timew_desc_override = True
 ##############################
 
@@ -82,22 +83,27 @@ def export_timew_text():
     return timew_txt if export_timew_active() else notask_msg
 
 
+def pad_time(s):
+    return s if len(s) == 2 else "0" + s
+
+
 # oof this is a mess. sort it out.
 def export_duration():
     timew_duration_shell = "timew get dom.active.duration"
     timew_duration_text = subprocess.check_output(
         timew_duration_shell, shell=True
     ).decode("utf-8")[:-1]
-    find_hrs = re.findall("\d\dH", timew_duration_text)
-    find_mins = re.findall("\d\dM", timew_duration_text)
-    duration_hrs = find_hrs[0][:-1] if len(find_hrs) > 0 else "00"
-    duration_mins = find_mins[0][:-1] if len(find_mins) > 0 else "00"
+    find_hrs = re.findall("\d?\dH", timew_duration_text)
+    find_mins = re.findall("\d?\dM", timew_duration_text)
+    duration_hrs = pad_time(find_hrs[0][:-1]) if len(find_hrs) > 0 else "00"
+    duration_mins = pad_time(find_mins[0][:-1]) if len(find_mins) > 0 else "00"
     return duration_hrs + ":" + duration_mins
 
 
 def main():
     task_desc = ""
     task_append = ""
+    timew_duration = ""
     if taskw_tf:
         descr, task_num = export_taskw()
         task_desc = shorten(descr)
@@ -106,12 +112,12 @@ def main():
 
     if timew_tf:
         # pull duration
-        pass
+        timew_duration = export_duration() + " " if export_timew_active() else ""
 
     if timew_desc_override or not taskw_tf:
         task_desc = shorten(export_timew_text())
     # We will be appending more things to this, later.
-    bar_text = task_desc + task_append
+    bar_text = timew_duration + task_desc + task_append
     return bar_text
 
 

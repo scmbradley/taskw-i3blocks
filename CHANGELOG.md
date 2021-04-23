@@ -7,6 +7,7 @@
  - Config options to turn on/off calling taskwarrior
  - Config options to turn on/off calling timewarrior
  - Timewarrior task description override
+ - Timewarrior display elapsed time option
 
 ## v0.1.0
 
