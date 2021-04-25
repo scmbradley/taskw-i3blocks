@@ -6,11 +6,11 @@ and an indication of how many other active tasks you have.
 
 ## Config options
 
- - `TASKW_TF` : whether to display information about tasks (from taskwarrior)
- - `TIMEW_TF` : whether to display information about time durations (from timewarrior)
- - `TIMEW_DESC_OVERRIDE` : whether to pull task description information from taskwarrior (false) or timewarrior (true). Will also set `TIMEW_TF` to true.
- - `TASKW_MAX_LENGTH` : the number of characters to truncate long task descriptions at
- - `TASKW_NOTASK_MSG` : the text to display if there are no active tasks
+ - `TASKW_TF` : whether to display information about tasks (from taskwarrior). By default it displays the description of (one of) the active task(s).
+ - `TIMEW_TF` : whether to display information about time durations (from timewarrior). Displays minutes and hours. We don't display seconds because the block only updates every 15 seconds, and we don't display longer stretches of time because if you spend more than 24 hours on a task, you aren't making your tasks small enough.
+ - `TIMEW_DESC_OVERRIDE` : whether to pull task description information from taskwarrior (false) or timewarrior (true). Will also set `TIMEW_TF` to true if true.
+ - `TASKW_MAX_LENGTH` : the number of characters to truncate long task descriptions at.
+ - `TASKW_NOTASK_MSG` : the text to display if there are no active tasks.
  - `TASKW_SORT_URGENCY` : a boolean to determine whether to display the most urgent active task (or the default behaviour which is to display the task which has been active longest).
  
 

@@ -26,11 +26,10 @@ def strbool(s):
 
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
 notask_msg = _default("TASKW_NOTASK_MSG", default="No Task", arg_type=str)
-urgency_bool = _default("TASKW_SORT_URGENCY", default="f", arg_type=strbool)
-
-
+urgency_tf = _default("TASKW_SORT_URGENCY", default="f", arg_type=strbool)
 taskw_tf = _default("TASKW_TF", default="t", arg_type=strbool)
 timew_tf = _default("TIMEW_TF", default="f", arg_type=strbool)
+pending_tasks_tf = _default("TASKW_PENDING_TF", default="f", arg_type=strbool)
 timew_desc_override = _default("TIMEW_DESC_OVERRIDE", default="f", arg_type=strbool)
 
 # Set timew_tf to true if the override is set.
@@ -41,8 +40,10 @@ if timew_desc_override:
 # TESTING TESTING TESTING
 
 # taskw_tf = False
-timew_tf = True
+# timew_tf = True
 # timew_desc_override = True
+# pending_tasks_tf = True
+# notask_msg = "~No Task~"
 ##############################
 
 
@@ -53,18 +54,27 @@ def shorten(string):
         return string[: maxlen - 3] + "..."
 
 
+# write helper function that takes a taskw filter and returns the json object
+
+
 def export_taskw():
     shell_cmd = "task +ACTIVE export"
     j = json.loads(subprocess.check_output(shell_cmd, shell=True))
     max_urg = 0
     if len(j) > 0:
-        if urgency_bool:
+        if urgency_tf:
             for i in range(len(j)):
                 if j[i]["urgency"] > j[max_urg]["urgency"]:
                     max_urg = i
         return j[max_urg]["description"], len(j)
     else:
         return notask_msg, 0
+
+
+def export_pending():
+    shell_cmd = "task +PENDING export"
+    j = json.loads(subprocess.check_output(shell_cmd, shell=True))
+    return len(j)
 
 
 # Helper function to export from timew
@@ -87,16 +97,21 @@ def pad_time(s):
     return s if len(s) == 2 else "0" + s
 
 
-# oof this is a mess. sort it out.
+def _extract_time(s, t):
+    match_list = re.findall("\d?\d" + s, t)
+    return pad_time(match_list[0][:-1]) if len(match_list) > 0 else "00"
+
+
 def export_duration():
     timew_duration_shell = "timew get dom.active.duration"
-    timew_duration_text = subprocess.check_output(
-        timew_duration_shell, shell=True
-    ).decode("utf-8")[:-1]
-    find_hrs = re.findall("\d?\dH", timew_duration_text)
-    find_mins = re.findall("\d?\dM", timew_duration_text)
-    duration_hrs = pad_time(find_hrs[0][:-1]) if len(find_hrs) > 0 else "00"
-    duration_mins = pad_time(find_mins[0][:-1]) if len(find_mins) > 0 else "00"
+    try:
+        timew_duration_text = subprocess.check_output(
+            timew_duration_shell, shell=True
+        ).decode("utf-8")[:-1]
+    except subprocess.CalledProcessError:
+        return ""
+    duration_hrs = _extract_time("H", timew_duration_text)
+    duration_mins = _extract_time("M", timew_duration_text)
     return duration_hrs + ":" + duration_mins
 
 
@@ -104,6 +119,7 @@ def main():
     task_desc = ""
     task_append = ""
     timew_duration = ""
+    pending_text = ""
     if taskw_tf:
         descr, task_num = export_taskw()
         task_desc = shorten(descr)
@@ -116,8 +132,11 @@ def main():
 
     if timew_desc_override or not taskw_tf:
         task_desc = shorten(export_timew_text())
-    # We will be appending more things to this, later.
-    bar_text = timew_duration + task_desc + task_append
+
+    if pending_tasks_tf:
+        pending_text = f" [{export_pending()}]"
+
+    bar_text = timew_duration + task_desc + task_append + pending_text
     return bar_text
 
 
