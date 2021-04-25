@@ -54,12 +54,23 @@ def shorten(string):
         return string[: maxlen - 3] + "..."
 
 
-# write helper function that takes a taskw filter and returns the json object
+def taskw_to_json(filter_string):
+    return json.loads(
+        subprocess.check_output("task " + filter_string + " export", shell=True)
+    )
+
+
+def timew_to_str(dom_string, decode=True):
+    try:
+        out = subprocess.check_output("timew get " + dom_string, shell=True)
+    except subprocess.CalledProcessError:
+        out = ""
+        decode = False
+    return out.decode("utf-8")[:-1] if decode else out
 
 
 def export_taskw():
-    shell_cmd = "task +ACTIVE export"
-    j = json.loads(subprocess.check_output(shell_cmd, shell=True))
+    j = taskw_to_json("+ACTIVE")
     max_urg = 0
     if len(j) > 0:
         if urgency_tf:
@@ -72,24 +83,15 @@ def export_taskw():
 
 
 def export_pending():
-    shell_cmd = "task +PENDING export"
-    j = json.loads(subprocess.check_output(shell_cmd, shell=True))
-    return len(j)
-
-
-# Helper function to export from timew
+    return len(taskw_to_json("+PENDING"))
 
 
 def export_timew_active():
-    timew_active_shell = "timew get dom.active"
-    timew_active_tf = subprocess.check_output(timew_active_shell, shell=True)
-    return True if b"1" in timew_active_tf else False
+    return b"1" in timew_to_str("dom.active", decode=False)
 
 
 def export_timew_text():
-    timew_shell = "timew get dom.active.tag.1"
-    # the output of `timew get` includes a newline that we have to strip.
-    timew_txt = subprocess.check_output(timew_shell, shell=True).decode("utf-8")[:-1]
+    timew_txt = timew_to_str("dom.active.tag.1")
     return timew_txt if export_timew_active() else notask_msg
 
 
@@ -97,21 +99,15 @@ def pad_time(s):
     return s if len(s) == 2 else "0" + s
 
 
-def _extract_time(s, t):
-    match_list = re.findall("\d?\d" + s, t)
+def extract_time(s, t):
+    match_list = re.findall(r"\d?\d" + s, t)
     return pad_time(match_list[0][:-1]) if len(match_list) > 0 else "00"
 
 
 def export_duration():
-    timew_duration_shell = "timew get dom.active.duration"
-    try:
-        timew_duration_text = subprocess.check_output(
-            timew_duration_shell, shell=True
-        ).decode("utf-8")[:-1]
-    except subprocess.CalledProcessError:
-        return ""
-    duration_hrs = _extract_time("H", timew_duration_text)
-    duration_mins = _extract_time("M", timew_duration_text)
+    timew_duration_text = timew_to_str("dom.active.duration")
+    duration_hrs = extract_time("H", timew_duration_text)
+    duration_mins = extract_time("M", timew_duration_text)
     return duration_hrs + ":" + duration_mins
 
 
