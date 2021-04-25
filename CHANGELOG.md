@@ -1,5 +1,16 @@
 # Changelog for taskw blocklet
 
+This changelog follows the conventions of [keep a changelog](https://keepachangelog.com/en/1.0.0/)
+and [semantive versioning](https://semver.org/spec/v2.0.0.html).
+
+## UNRELEASED
+
+### OTHER
+
+ - Updated readme regarding python versions and dependencies
+ - Removed a helper script from the git repo
+ - Added some information to the top of the changelog
+
 ## v0.2.0
 
 ### ADDED

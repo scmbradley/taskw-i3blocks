@@ -4,6 +4,13 @@ This blocklet shows what task(s) you currently have active in TaskWarrior.
 The blocklet will display the description of one of the active tasks
 and an indication of how many other active tasks you have.
 
+The script has been tested in python 3.6, 3.8 and 3.9,
+and has no dependencies apart from a standard python install
+and (obviously) `taskwarrior` and (optionally) `timewarrior`.
+
+A version of the script has been submitted to [`i3blocks-contrib`](https://github.com/vivien/i3blocks-contrib) but the most up to date version is available from [this repo](https://github.com/scmbradley/taskw-i3blocks).
+
+
 ## Config options
 
  - `TASKW_TF` : whether to display information about tasks (from taskwarrior). By default it displays the description of (one of) the active task(s).
