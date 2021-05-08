@@ -3,6 +3,12 @@
 This changelog follows the conventions of [keep a changelog](https://keepachangelog.com/en/1.0.0/)
 and [semantive versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.2.2
+
+### Other
+
+ - Moved to using `bumpversion` to update versions. Nothing to see here.
+
 ## v0.2.1
 
 ### OTHER
