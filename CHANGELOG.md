@@ -5,21 +5,22 @@ and [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
-### Other
+### OTHER
 
  - Changed the bumpversion commit message
  - Added version information to `test_basic.py` and `i3blocks.conf`
+ - Added unit tests for more functions
 
 ## v0.2.3
 
-### Other
+### OTHER
 
  - Wrote some tests
  - Did some refactoring of the taskw script
 
 ## v0.2.2
 
-### Other
+### OTHER
 
  - Moved to using `bumpversion` to update versions. Nothing to see here.
 
