@@ -38,6 +38,19 @@ import taskw
 # --- skipping
 
 
+# Helper functions
+def extract_formats(td):
+    hrs, remainder = divmod(td, timedelta(seconds=3600))
+    mins, seconds = divmod(remainder, timedelta(seconds=60))
+    time_dict = {"H": hrs, "M": mins, "S": seconds.seconds}
+    input_string = f"PT{hrs}H{mins}M{seconds.seconds}S"
+    return time_dict, input_string
+
+
+given_times = timedeltas(timedelta(seconds=1), timedelta(hours=12))
+hms = sampled_from(["H", "M", "S"])
+
+
 @pytest.fixture
 def maxlen():
     return 35
@@ -74,25 +87,30 @@ class TestPadTime:
 
 class TestExtractTime:
     @given(
-        td=timedeltas(timedelta(seconds=1), timedelta(hours=12)),
-        t_str=sampled_from(["H", "M", "S"]),
+        td=given_times,
+        t_str=hms,
     )
     def test_match_as_numbers(self, td, t_str):
-        hrs, remainder = divmod(td, timedelta(seconds=3600))
-        mins, seconds = divmod(remainder, timedelta(seconds=60))
-        time_dict = {"H": hrs, "M": mins, "S": seconds.seconds}
-        input_string = f"PT{hrs}H{mins}M{seconds.seconds}S"
+        time_dict, input_string = extract_formats(td)
         output_string = time_dict[t_str]
         result = taskw.extract_time(t_str, input_string)
         assert int(result) == int(output_string)
 
+    @given(
+        td=given_times,
+        t_str=hms,
+    )
+    def test_match_as_strings(self, td, t_str):
+        time_dict, input_string = extract_formats(td)
+        output_string = taskw.pad_time(str(time_dict[t_str]))
+        result = taskw.extract_time(t_str, input_string)
+        assert str(result) == str(output_string)
+
 
 class TestTranslateTimewString:
-    @given(timedeltas(timedelta(seconds=1), timedelta(hours=12)))
+    @given(td=given_times)
     def test_translate_timew_string(self, td):
-        hrs, remainder = divmod(td, timedelta(seconds=3600))
-        mins, seconds = divmod(remainder, timedelta(seconds=60))
-        input_string = f"PT{hrs}H{mins}M{seconds.seconds}S"
-        output_string = f"{hrs:0>2d}:{mins:0>2d}"
+        time_dict, input_string = extract_formats(td)
+        output_string = f"{time_dict['H']:0>2d}:{time_dict['M']:0>2d}"
         result = taskw.translate_timew_string(input_string)
         assert result == output_string
