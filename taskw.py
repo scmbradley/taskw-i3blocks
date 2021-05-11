@@ -42,7 +42,7 @@ if timew_desc_override:
 # TESTING TESTING TESTING
 
 # taskw_tf = False
-# timew_tf = True
+timew_tf = True
 # timew_desc_override = True
 # pending_tasks_tf = True
 # notask_msg = "~No Task~"
@@ -62,13 +62,33 @@ def taskw_to_json(filter_string):
     )
 
 
-def timew_to_str(dom_string, decode=True):
+# Two functions: get_time_string, translate_time_string
+
+# def timew_to_str(dom_string, decode=True):
+#     try:
+#         out = subprocess.check_output("timew get " + dom_string, shell=True)
+#     except subprocess.CalledProcessError:
+#         out = ""
+#         decode = False
+#     return out.decode("utf-8")[:-1] if decode else out
+
+
+def get_time_bytes(dom_string):
     try:
         out = subprocess.check_output("timew get " + dom_string, shell=True)
     except subprocess.CalledProcessError:
         out = ""
-        decode = False
-    return out.decode("utf-8")[:-1] if decode else out
+    return out
+
+
+def decode_time_bytes(in_bytes):
+    to_string = in_bytes.decode("utf-8")[:-1]
+    return to_string
+
+
+def get_time_string(dom_string):
+    in_string = get_time_bytes(dom_string)
+    return decode_time_bytes(in_string)
 
 
 def export_taskw():
@@ -89,11 +109,11 @@ def export_pending():
 
 
 def export_timew_active():
-    return b"1" in timew_to_str("dom.active", decode=False)
+    return b"1" in get_time_bytes("dom.active")
 
 
 def export_timew_text():
-    timew_txt = timew_to_str("dom.active.tag.1")
+    timew_txt = get_time_string("dom.active.tag.1")
     return timew_txt if export_timew_active() else notask_msg
 
 
@@ -106,10 +126,10 @@ def extract_time(s, t):
     return pad_time(match_list[0][:-1]) if len(match_list) > 0 else "00"
 
 
-def export_duration():
-    timew_duration_text = timew_to_str("dom.active.duration")
-    duration_hrs = extract_time("H", timew_duration_text)
-    duration_mins = extract_time("M", timew_duration_text)
+def translate_timew_string(timew_in_str):
+    #    timew_in_str = timew_to_str("dom.active.duration")
+    duration_hrs = extract_time("H", timew_in_str)
+    duration_mins = extract_time("M", timew_in_str)
     return duration_hrs + ":" + duration_mins
 
 
@@ -125,8 +145,10 @@ def main():
             task_append = " + " + str(task_num - 1)
 
     if timew_tf:
-        # pull duration
-        timew_duration = export_duration() + " " if export_timew_active() else ""
+        get_string = get_time_string("dom.active.duration")
+        timew_duration = (
+            translate_timew_string(get_string) + " " if export_timew_active() else ""
+        )
 
     if timew_desc_override or not taskw_tf:
         task_desc = shorten(export_timew_text())

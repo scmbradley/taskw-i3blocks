@@ -1,12 +1,30 @@
 #!/usr/bin/env python3
 
 import pytest
+from hypothesis import given
+from datetime import timedelta
+from hypothesis.strategies import timedeltas
+
 import taskw
 
 
 @pytest.fixture
 def maxlen():
     return 35
+
+
+@given(timedeltas(timedelta(seconds=1), timedelta(hours=12)))
+def test_duration(monkeypatch, td):
+    hrs, remainder = divmod(td, timedelta(seconds=3600))
+    mins, seconds = divmod(remainder, timedelta(seconds=60))
+
+    def patch_time():
+        return f"PT{hrs}H{mins}M{seconds.seconds}S"
+
+    monkeypatch.setattr(taskw, "time_to_str", patch_time)
+    t_exp = taskw.translate_timew_string()
+    t_out = f"{hrs}:{mins}"
+    assert t_exp == t_out
 
 
 class TestShorten:
@@ -31,5 +49,5 @@ class TestExportDuration:
             return "PT2H3M17S"
 
         monkeypatch.setattr(taskw, "timew_to_str", patch_time)
-        t = taskw.export_duration()
+        t = taskw.translate_timew_string()
         assert t == "02:03"
