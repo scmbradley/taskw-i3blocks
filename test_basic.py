@@ -17,18 +17,18 @@ import taskw
 # --- need .task mockup
 # 73:def sort_taskw_info(taskw_json):
 # --- need json output fixture
-# 85:def get_taskw_info(taskw_filter="+ACTIVE"):
-# --- skipping
 # 90:def export_pending():
 # 97:def get_timew_bytes(dom_string):
 # --- need mockup of timew output
 # 105:def decode_timew_bytes(in_bytes):
 # --- need timew output fixture (bytes)
+
+# Skipping:
+# 85:def get_taskw_info(taskw_filter="+ACTIVE"):
 # 110:def get_timew_string(dom_string):
 # 115:def get_timew_active():
 # 119:def export_timew_description():
 # 139:def main():
-# --- skipping
 
 
 # Helper functions
