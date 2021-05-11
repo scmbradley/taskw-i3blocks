@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 # This is taskw.py v0.2.2
 
 import subprocess
@@ -48,7 +49,7 @@ if timew_desc_override:
 ##############################
 
 
-def shorten(string):
+def shorten(string, maxlen=maxlen):
     if len(string) <= maxlen:
         return string
     else:

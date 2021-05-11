@@ -1,3 +1,4 @@
 *~
 /.python-version
 /cpcontrib.sh
+/__pycache__/
