@@ -7,7 +7,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-This is the readme for `taskw-i3blocks` v0.2.2.
+This is the readme for `taskw-i3blocks` v0.2.3.
 This blocklet shows what task(s) you currently have active in TaskWarrior.
 The blocklet will display the description of one of the active tasks
 and an indication of how many other active tasks you have.
