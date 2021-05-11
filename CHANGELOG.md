@@ -3,7 +3,17 @@
 This changelog follows the conventions of [keep a changelog](https://keepachangelog.com/en/1.0.0/)
 and [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.2.4
+## Unreleased
+
+### OTHER
+
+ - Made a minor change to `bumpversion` config so that the changelog 
+ updates to the appropriate tag.
+ A side effect of this is that I cannot bump version without having
+ something listed in the "unreleased" section.
+
+
+## v0.2.4
 
 ### OTHER
 
