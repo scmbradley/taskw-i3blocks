@@ -14,9 +14,10 @@ and an indication of how many other active tasks you have.
 
 The script has been tested in python 3.6, 3.8 and 3.9 on ubuntu 20.10 with regolith,
 and has no dependencies apart from a standard python install
-and (obviously) at least one of `taskwarrior` and `timewarrior`.
+and (obviously) at least one of [`taskwarrior](https://taskwarrior.org/)` and [`timewarrior`](https://timewarrior.net/).
 
-A version of the script has been submitted to [`i3blocks-contrib`](https://github.com/vivien/i3blocks-contrib) but the most up to date version is available from [this repo](https://github.com/scmbradley/taskw-i3blocks).
+A version of the script has been submitted to [`i3blocks-contrib`](https://github.com/vivien/i3blocks-contrib) 
+but the most up to date version is available from [this repo](https://github.com/scmbradley/taskw-i3blocks).
 
 
 ## Config options

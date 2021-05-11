@@ -6,13 +6,14 @@ import pytest
 from hypothesis import given
 from datetime import timedelta
 from hypothesis.strategies import timedeltas, from_regex, sampled_from
+import tasklib
+from pathlib import Path
 
 import taskw
 
 # ag "def " taskw.py:
 # 14:def _default(name, default="", arg_type=str):
 # --- need mockup of system variables
-# 21:def strbool(s):
 # 67:def get_taskw_json(filter_string):
 # --- need .task mockup
 # 73:def sort_taskw_info(taskw_json):
@@ -24,6 +25,7 @@ import taskw
 # --- need timew output fixture (bytes)
 
 # Skipping:
+# 21:def strbool(s):
 # 85:def get_taskw_info(taskw_filter="+ACTIVE"):
 # 110:def get_timew_string(dom_string):
 # 115:def get_timew_active():
@@ -45,8 +47,37 @@ hms = sampled_from(["H", "M", "S"])
 
 
 @pytest.fixture
+def taskw_description():
+    return "Testing task description"
+
+
+@pytest.fixture
+def taskw_mock(taskw_description):
+    description = taskw_description
+    task_path = Path.cwd().joinpath(".temp_task")
+    tw = tasklib.TaskWarrior(data_location=task_path, create=True)
+    new_task = tasklib.Task(tw, description=description)
+    new_task.save()
+    new_task.start()
+    yield task_path
+    for p in task_path.iterdir():
+        p.unlink()
+    task_path.rmdir()
+
+
+@pytest.fixture
 def maxlen():
     return 35
+
+
+class TestGetTaskwJson:
+    def test_extract_description(self, taskw_mock, taskw_description):
+        path = taskw_mock
+        description = taskw_description
+        mock_output = taskw.get_taskw_json(
+            "rc.data.location=" + path.as_posix() + " +ACTIVE"
+        )
+        assert mock_output[0]["description"] == description
 
 
 # TODO: tidy up TestShorten
