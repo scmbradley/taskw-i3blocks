@@ -3,7 +3,7 @@
 This changelog follows the conventions of [keep a changelog](https://keepachangelog.com/en/1.0.0/)
 and [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.2.4
 
 ### OTHER
 
