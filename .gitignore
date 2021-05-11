@@ -2,3 +2,4 @@
 /.python-version
 /cpcontrib.sh
 /__pycache__/
+/.hypothesis/
