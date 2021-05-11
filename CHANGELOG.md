@@ -1,7 +1,14 @@
 # Changelog for taskw blocklet
 
 This changelog follows the conventions of [keep a changelog](https://keepachangelog.com/en/1.0.0/)
-and [semantive versioning](https://semver.org/spec/v2.0.0.html).
+and [semantic versioning](https://semver.org/spec/v2.0.0.html).
+
+## v0.2.3
+
+### Other
+
+ - Wrote some tests
+ - Did some refactoring of the taskw script
 
 ## v0.2.2
 
