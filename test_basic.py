@@ -13,9 +13,9 @@ def maxlen():
     return 35
 
 
-class TestTimewTranslation:
+class TestTranslateTimewString:
     @given(timedeltas(timedelta(seconds=1), timedelta(hours=12)))
-    def test_timew_translation(self, td):
+    def test_translate_timew_string(self, td):
         hrs, remainder = divmod(td, timedelta(seconds=3600))
         mins, seconds = divmod(remainder, timedelta(seconds=60))
         input_string = f"PT{hrs}H{mins}M{seconds.seconds}S"

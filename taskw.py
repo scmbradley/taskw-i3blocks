@@ -8,6 +8,9 @@ import os
 import re
 
 
+# config options code
+
+
 def _default(name, default="", arg_type=str):
     val = default
     if name in os.environ:
@@ -48,6 +51,8 @@ if timew_desc_override:
 # notask_msg = "~No Task~"
 ##############################
 
+# text output helper functions
+
 
 def shorten(string, maxlen=maxlen):
     if len(string) <= maxlen:
@@ -56,24 +61,40 @@ def shorten(string, maxlen=maxlen):
         return string[: maxlen - 3] + "..."
 
 
-def taskw_to_json(filter_string):
+# taskw functions
+
+
+def get_taskw_json(filter_string):
     return json.loads(
         subprocess.check_output("task " + filter_string + " export", shell=True)
     )
 
 
-# Two functions: get_time_string, translate_time_string
+def sort_taskw_info(taskw_json):
+    max_urg = 0
+    if len(taskw_json) > 0:
+        if urgency_tf:
+            for i in range(len(taskw_json)):
+                if taskw_json[i]["urgency"] > taskw_json[max_urg]["urgency"]:
+                    max_urg = i
+        return taskw_json[max_urg]["description"], len(taskw_json)
+    else:
+        return notask_msg, 0
 
-# def timew_to_str(dom_string, decode=True):
-#     try:
-#         out = subprocess.check_output("timew get " + dom_string, shell=True)
-#     except subprocess.CalledProcessError:
-#         out = ""
-#         decode = False
-#     return out.decode("utf-8")[:-1] if decode else out
+
+def get_taskw_info(taskw_filter="+ACTIVE"):
+    j = get_taskw_json(taskw_filter)
+    return sort_taskw_info(j)
 
 
-def get_time_bytes(dom_string):
+def export_pending():
+    return len(get_taskw_json("+PENDING"))
+
+
+# timew functions
+
+
+def get_timew_bytes(dom_string):
     try:
         out = subprocess.check_output("timew get " + dom_string, shell=True)
     except subprocess.CalledProcessError:
@@ -81,53 +102,35 @@ def get_time_bytes(dom_string):
     return out
 
 
-def decode_time_bytes(in_bytes):
+def decode_timew_bytes(in_bytes):
     to_string = in_bytes.decode("utf-8")[:-1]
     return to_string
 
 
-def get_time_string(dom_string):
-    in_string = get_time_bytes(dom_string)
-    return decode_time_bytes(in_string)
+def get_timew_string(dom_string):
+    in_string = get_timew_bytes(dom_string)
+    return decode_timew_bytes(in_string)
 
 
-def export_taskw():
-    j = taskw_to_json("+ACTIVE")
-    max_urg = 0
-    if len(j) > 0:
-        if urgency_tf:
-            for i in range(len(j)):
-                if j[i]["urgency"] > j[max_urg]["urgency"]:
-                    max_urg = i
-        return j[max_urg]["description"], len(j)
-    else:
-        return notask_msg, 0
+def get_timew_active():
+    return b"1" in get_timew_bytes("dom.active")
 
 
-def export_pending():
-    return len(taskw_to_json("+PENDING"))
-
-
-def export_timew_active():
-    return b"1" in get_time_bytes("dom.active")
-
-
-def export_timew_text():
-    timew_txt = get_time_string("dom.active.tag.1")
-    return timew_txt if export_timew_active() else notask_msg
+def export_timew_description():
+    timew_txt = get_timew_string("dom.active.tag.1")
+    return timew_txt if get_timew_active() else notask_msg
 
 
 def pad_time(s):
     return s if len(s) == 2 else "0" + s
 
 
-def extract_time(s, t):
-    match_list = re.findall(r"\d?\d" + s, t)
+def extract_time(delimiter, input_string):
+    match_list = re.findall(r"\d?\d" + delimiter, input_string)
     return pad_time(match_list[0][:-1]) if len(match_list) > 0 else "00"
 
 
 def translate_timew_string(timew_in_str):
-    #    timew_in_str = timew_to_str("dom.active.duration")
     duration_hrs = extract_time("H", timew_in_str)
     duration_mins = extract_time("M", timew_in_str)
     return duration_hrs + ":" + duration_mins
@@ -139,19 +142,19 @@ def main():
     timew_duration = ""
     pending_text = ""
     if taskw_tf:
-        descr, task_num = export_taskw()
+        descr, task_num = get_taskw_info()
         task_desc = shorten(descr)
         if task_num > 1:
             task_append = " + " + str(task_num - 1)
 
     if timew_tf:
-        get_string = get_time_string("dom.active.duration")
+        get_string = get_timew_string("dom.active.duration")
         timew_duration = (
-            translate_timew_string(get_string) + " " if export_timew_active() else ""
+            translate_timew_string(get_string) + " " if get_timew_active() else ""
         )
 
     if timew_desc_override or not taskw_tf:
-        task_desc = shorten(export_timew_text())
+        task_desc = shorten(export_timew_description())
 
     if pending_tasks_tf:
         pending_text = f" [{export_pending()}]"
