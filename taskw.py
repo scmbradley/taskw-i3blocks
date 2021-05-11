@@ -44,11 +44,11 @@ if timew_desc_override:
 ##############################
 # TESTING TESTING TESTING
 
-# taskw_tf = False
-# timew_tf = True
-# timew_desc_override = True
-# pending_tasks_tf = True
-# notask_msg = "~No Task~"
+taskw_tf = False
+timew_tf = True
+timew_desc_override = True
+pending_tasks_tf = True
+notask_msg = "~No Task~"
 ##############################
 
 # text output helper functions
@@ -98,7 +98,7 @@ def get_timew_bytes(dom_string):
     try:
         out = subprocess.check_output("timew get " + dom_string, shell=True)
     except subprocess.CalledProcessError:
-        out = ""
+        out = b""
     return out
 
 

@@ -11,8 +11,6 @@ import taskw
 # 14:def _default(name, default="", arg_type=str):
 # 21:def strbool(s):
 # --- need mockup of system variables
-# 57:def shorten(string, maxlen=maxlen):
-# --- done
 # 67:def get_taskw_json(filter_string):
 # --- need .task mockup
 # 73:def sort_taskw_info(taskw_json):
@@ -27,13 +25,6 @@ import taskw
 # 110:def get_timew_string(dom_string):
 # 115:def get_timew_active():
 # 119:def export_timew_description():
-# --- skipping
-# 124:def pad_time(s):
-# --- done
-# 128:def extract_time(delimiter, input_string):
-# --- can do
-# 133:def translate_timew_string(timew_in_str):
-# --- done
 # 139:def main():
 # --- skipping
 
