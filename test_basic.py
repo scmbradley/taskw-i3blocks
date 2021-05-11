@@ -9,8 +9,8 @@ import taskw
 
 # ag "def " taskw.py:
 # 14:def _default(name, default="", arg_type=str):
-# 21:def strbool(s):
 # --- need mockup of system variables
+# 21:def strbool(s):
 # 67:def get_taskw_json(filter_string):
 # --- need .task mockup
 # 73:def sort_taskw_info(taskw_json):

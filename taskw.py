@@ -44,11 +44,11 @@ if timew_desc_override:
 ##############################
 # TESTING TESTING TESTING
 
-taskw_tf = False
-timew_tf = True
-timew_desc_override = True
-pending_tasks_tf = True
-notask_msg = "~No Task~"
+# taskw_tf = False
+# timew_tf = True
+# timew_desc_override = True
+# pending_tasks_tf = True
+# notask_msg = "~No Task~"
 ##############################
 
 # text output helper functions
