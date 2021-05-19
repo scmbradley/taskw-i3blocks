@@ -36,6 +36,7 @@ taskw_tf = _default("TASKW_TF", default="t", arg_type=strbool)
 timew_tf = _default("TIMEW_TF", default="f", arg_type=strbool)
 pending_tasks_tf = _default("TASKW_PENDING_TF", default="f", arg_type=strbool)
 timew_desc_override = _default("TIMEW_DESC_OVERRIDE", default="f", arg_type=strbool)
+main_filter = _default("TASKW_MAIN_FILTER", default="+ACTIVE", arg_type=str)
 
 # Set timew_tf to true if the override is set.
 if timew_desc_override:
@@ -82,7 +83,7 @@ def sort_taskw_info(taskw_json):
         return notask_msg, 0
 
 
-def get_taskw_info(taskw_filter="+ACTIVE"):
+def get_taskw_info(taskw_filter=main_filter):
     j = get_taskw_json(taskw_filter)
     return sort_taskw_info(j)
 

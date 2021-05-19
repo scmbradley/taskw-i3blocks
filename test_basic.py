@@ -47,18 +47,30 @@ hms = sampled_from(["H", "M", "S"])
 
 
 @pytest.fixture
-def taskw_description():
+def taskw_active_description():
     return "Testing task description"
 
 
 @pytest.fixture
-def taskw_mock(taskw_description):
-    description = taskw_description
+def taskw_tagged_description():
+    return "This task is tagged"
+
+
+@pytest.fixture
+def taskw_mock(taskw_active_description, taskw_tagged_description):
+    active_description = taskw_active_description
+    tagged_description = taskw_tagged_description
     task_path = Path.cwd().joinpath(".temp_task")
     tw = tasklib.TaskWarrior(data_location=task_path, create=True)
-    new_task = tasklib.Task(tw, description=description)
-    new_task.save()
-    new_task.start()
+    new_tagged_task = tasklib.Task(
+        tw,
+        description=tagged_description,
+        tags=["tggd"],
+    )
+    new_tagged_task.save()
+    new_active_task = tasklib.Task(tw, description=active_description)
+    new_active_task.save()
+    new_active_task.start()
     yield task_path
     for p in task_path.iterdir():
         p.unlink()
@@ -70,12 +82,25 @@ def maxlen():
     return 35
 
 
+# TODO: refactor tests with mock
+
+
 class TestGetTaskwJson:
-    def test_extract_description(self, taskw_mock, taskw_description):
+    def test_extract_description(self, taskw_mock, taskw_active_description):
         path = taskw_mock
-        description = taskw_description
+        description = taskw_active_description
         mock_output = taskw.get_taskw_json(
             "rc.data.location=" + path.as_posix() + " +ACTIVE"
+        )
+        assert mock_output[0]["description"] == description
+
+
+class TestAltFilter:
+    def test_alternate_filter(self, taskw_mock, taskw_tagged_description):
+        path = taskw_mock
+        description = taskw_tagged_description
+        mock_output = taskw.get_taskw_json(
+            "rc.data.location=" + path.as_posix() + " +tggd"
         )
         assert mock_output[0]["description"] == description
 
