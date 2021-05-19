@@ -46,17 +46,17 @@ given_times = timedeltas(timedelta(seconds=1), timedelta(hours=12))
 hms = sampled_from(["H", "M", "S"])
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def taskw_active_description():
     return "Testing task description"
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def taskw_tagged_description():
     return "This task is tagged"
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def taskw_mock(taskw_active_description, taskw_tagged_description):
     active_description = taskw_active_description
     tagged_description = taskw_tagged_description
@@ -82,7 +82,7 @@ def maxlen():
     return 35
 
 
-# TODO: refactor tests with mock
+# TODO: refactor tests with mocks
 
 
 class TestGetTaskwJson:
@@ -103,6 +103,11 @@ class TestAltFilter:
             "rc.data.location=" + path.as_posix() + " +tggd"
         )
         assert mock_output[0]["description"] == description
+
+    # TODO: fix set env test
+    def test_filter_conf(self, monkeypatch, taskw_mock, taskw_tagged_description):
+        monkeypatch.setenv("TASKW_MAIN_FILTER", "+tggd")
+        assert True
 
 
 # TODO: tidy up TestShorten
