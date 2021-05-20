@@ -14,6 +14,12 @@ import re
 
 
 def _default(name, default="", arg_type=str):
+    """
+    Set a parameter based on OS variable.
+
+    Fix the argument type and fall back on given default.
+
+    """
     val = default
     if name in os.environ:
         val = os.environ[name]
@@ -21,6 +27,7 @@ def _default(name, default="", arg_type=str):
 
 
 def _strbool(s):
+    """Return True if argument is t,T,true,TRUE etc."""
     return s.lower() in ["t", "true", "1"]
 
 
