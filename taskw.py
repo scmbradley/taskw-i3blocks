@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# This is taskw.py v0.2.4
+# This is taskw.py v0.3.0
 
 import subprocess
 import json

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This is the test suite for taskw.py v0.2.4
+# This is the test suite for taskw.py v0.3.0
 
 import pytest
 from hypothesis import given
