@@ -1,4 +1,6 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+
+"""Extracts information from taskwarrior and timewarrior to display in i3block."""
 
 # This is taskw.py v0.3.0
 
@@ -125,35 +127,47 @@ def decode_timew_bytes(in_bytes):
 
 
 def get_timew_string(dom_string):
+    """Return string decoded output from calling timew with dom_string."""
     in_string = get_timew_bytes(dom_string)
     return decode_timew_bytes(in_string)
 
 
 def get_timew_active():
+    """Return True if timew has active tracking."""
     return b"1" in get_timew_bytes("dom.active")
 
 
 def export_timew_description():
+    """
+    Extract description from timew output.
+
+    Actually extracts first tag.
+
+    """
     timew_txt = get_timew_string("dom.active.tag.1")
     return timew_txt if get_timew_active() else notask_msg
 
 
 def pad_time(s):
+    """Add '0' to number if necessary."""
     return s if len(s) == 2 else "0" + s
 
 
 def extract_time(delimiter, input_string):
+    """Extract number of hours|minutes|seconds from timew output."""
     match_list = re.findall(r"\d?\d" + delimiter, input_string)
     return pad_time(match_list[0][:-1]) if len(match_list) > 0 else "00"
 
 
 def translate_timew_string(timew_in_str):
+    """Turn timew output time into duration in HH:MM format."""
     duration_hrs = extract_time("H", timew_in_str)
     duration_mins = extract_time("M", timew_in_str)
     return duration_hrs + ":" + duration_mins
 
 
 def main():
+    """Return string to display based on params."""
     task_desc = ""
     task_append = ""
     timew_duration = ""
