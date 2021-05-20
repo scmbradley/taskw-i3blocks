@@ -2,7 +2,7 @@
 
 """Extracts information from taskwarrior and timewarrior to display in i3block."""
 
-# This is taskw.py v0.3.0
+# This is taskw.py v0.3.1
 
 import subprocess
 import json
