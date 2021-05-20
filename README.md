@@ -29,6 +29,7 @@ but the most up to date version is available from [this repo](https://github.com
  - `TASKW_NOTASK_MSG` : the text to display if there are no active tasks.
  - `TASKW_SORT_URGENCY` : a boolean to determine whether to display the most urgent active task (or the default behaviour which is to display the task which has been active longest).
  - `TASKW_PENDING_TF` : a boolean to determine whether to display the total number of pending tasks
+ - `TASKW_MAIN_FILTER` option allows you to select a filter to display. The default is `+ACTIVE`.
  
 
 ## Timewarrior integration

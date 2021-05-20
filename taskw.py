@@ -18,7 +18,7 @@ def _default(name, default="", arg_type=str):
     return arg_type(val)
 
 
-def strbool(s):
+def _strbool(s):
     return s.lower() in ["t", "true", "1"]
 
 
@@ -31,11 +31,11 @@ def strbool(s):
 
 maxlen = _default("TASKW_MAX_LENGTH", default=35, arg_type=int)
 notask_msg = _default("TASKW_NOTASK_MSG", default="No Task", arg_type=str)
-urgency_tf = _default("TASKW_SORT_URGENCY", default="f", arg_type=strbool)
-taskw_tf = _default("TASKW_TF", default="t", arg_type=strbool)
-timew_tf = _default("TIMEW_TF", default="f", arg_type=strbool)
-pending_tasks_tf = _default("TASKW_PENDING_TF", default="f", arg_type=strbool)
-timew_desc_override = _default("TIMEW_DESC_OVERRIDE", default="f", arg_type=strbool)
+urgency_tf = _default("TASKW_SORT_URGENCY", default="f", arg_type=_strbool)
+taskw_tf = _default("TASKW_TF", default="t", arg_type=_strbool)
+timew_tf = _default("TIMEW_TF", default="f", arg_type=_strbool)
+pending_tasks_tf = _default("TASKW_PENDING_TF", default="f", arg_type=_strbool)
+timew_desc_override = _default("TIMEW_DESC_OVERRIDE", default="f", arg_type=_strbool)
 main_filter = _default("TASKW_MAIN_FILTER", default="+ACTIVE", arg_type=str)
 
 # Set timew_tf to true if the override is set.
@@ -56,6 +56,7 @@ if timew_desc_override:
 
 
 def shorten(string, maxlen=maxlen):
+    """Shorten a string to maxlen characters or fewer."""
     if len(string) <= maxlen:
         return string
     else:
@@ -66,12 +67,19 @@ def shorten(string, maxlen=maxlen):
 
 
 def get_taskw_json(filter_string):
+    """Take a taskw filter and returns the json output for task export."""
     return json.loads(
         subprocess.check_output("task " + filter_string + " export", shell=True)
     )
 
 
 def sort_taskw_info(taskw_json):
+    """
+    Return task description to display plus number of tasks.
+
+    Take json output from taskw and return the correct task description
+    to display and also the number of tasks matching the filter.
+    """
     max_urg = 0
     if len(taskw_json) > 0:
         if urgency_tf:
@@ -84,11 +92,13 @@ def sort_taskw_info(taskw_json):
 
 
 def get_taskw_info(taskw_filter=main_filter):
+    """Take a filter and return a task description and number of tasks."""
     j = get_taskw_json(taskw_filter)
     return sort_taskw_info(j)
 
 
 def export_pending():
+    """Return number of taskw pending tasks."""
     return len(get_taskw_json("+PENDING"))
 
 
@@ -96,6 +106,7 @@ def export_pending():
 
 
 def get_timew_bytes(dom_string):
+    """Return byte output from calling timew."""
     try:
         out = subprocess.check_output("timew get " + dom_string, shell=True)
     except subprocess.CalledProcessError:
@@ -104,6 +115,11 @@ def get_timew_bytes(dom_string):
 
 
 def decode_timew_bytes(in_bytes):
+    """
+    Take timew byte input and return string.
+
+    This function also strips the trailing newline.
+    """
     to_string = in_bytes.decode("utf-8")[:-1]
     return to_string
 

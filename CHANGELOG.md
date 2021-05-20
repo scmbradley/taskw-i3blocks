@@ -5,6 +5,10 @@ and [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## v0.3.0
 
+### ADDED
+
+ - `TASKW_MAIN_FILTER` option now allows you to select a filter other than `+ACTIVE` to display
+
 ### OTHER
 
  - Made a minor change to `bumpversion` config so that the changelog 
